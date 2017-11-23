@@ -1,6 +1,6 @@
-package com.steps.callstream;
+package com.steps.pianostream;
 
-import com.data.IOPath;
+//import com.data.IOPath;
 import com.x5.template.Chunk;
 import com.x5.template.Theme;
 import cucumber.api.DataTable;
@@ -15,20 +15,26 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
-import com.processing.CallStream;
-import org.apache.commons.io.FileUtils;
+import com.processing.PianoStream;
 
 import static junit.framework.Assert.assertTrue;
 
 public class FolderStructureSteps {
 
-    private IOPath ioPath;
+//    private Paths ioPath;
+    private String input_path = null;
+    private String output_path = null;
 
-    public FolderStructureSteps(IOPath ioPath) {
-        this.ioPath = ioPath;
+
+//    public FolderStructureSteps(IOPath ioPath) {
+//        this.ioPath = ioPath;
+//    }
+
+
+    public FolderStructureSteps() {
     }
 
-    @Given("^a file with theme (calls_log) containing the following (lines)$")
+    @Given("^a file with theme (piano_feed) containing the following (lines)$")
     public void aFileContainingTheFollowingLines(String themeName, String dataPoint, DataTable table) throws Throwable {
 
         List<Map<String,String>> test_lines = table.asMaps(String.class, String.class);
@@ -36,23 +42,23 @@ public class FolderStructureSteps {
         Chunk lines = getTemplate(themeName + "#" + dataPoint);
         lines.set(dataPoint, test_lines);
 
-        this.ioPath.input_path = writeDataToFile("data.dat", lines.toString().getBytes());
+        this.input_path = writeDataToFile("data.dat", lines.toString().getBytes());
     }
 
-    @When("^I run the CallStream job$")
-    public void iRunTheCallStreamJob() throws Throwable {
-        this.ioPath.output_path = "output/callstream/";
+    @When("^I run the PianoStream job$")
+    public void iRunThePianoStreamJob() throws Throwable {
+        this.output_path = "unprocessed/";
 
-        String[] arguments = {this.ioPath.input_path, this.ioPath.output_path};
-        CallStream.main(arguments);
+        String[] arguments = {this.input_path, this.output_path};
+        PianoStream.main(arguments);
     }
 
     @Then("^the following directory structure should be created:")
     public void theFollowingDirectoryStructureShouldBeCreated(List<String> table) throws Throwable {
        for (String m : table) {
            assertTrue(String.format("Output directory `%s` does not exist",
-                   Paths.get(this.ioPath.output_path, m).toString()),
-                   Files.exists(Paths.get(this.ioPath.output_path, m)));
+                   Paths.get(this.output_path, m).toString()),
+                   Files.exists(Paths.get(this.output_path, m)));
         }
      }
 
@@ -60,8 +66,8 @@ public class FolderStructureSteps {
     public void directoryShouldContainFile(String folder, List<String> table) throws Throwable {
         for (String m : table) {
             assertTrue(String.format("Output file `%s` does not exist",
-                    Paths.get(this.ioPath.output_path, folder, m).toString()),
-                    Files.exists(Paths.get(this.ioPath.output_path, folder, m)));
+                    Paths.get(this.output_path, folder, m).toString()),
+                    Files.exists(Paths.get(this.output_path, folder, m)));
         }
     }
 

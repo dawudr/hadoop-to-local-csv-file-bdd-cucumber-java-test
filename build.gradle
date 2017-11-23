@@ -1,11 +1,12 @@
 buildscript {
   repositories {
+    mavenLocal()
     jcenter()
   }
 
   dependencies {
-    classpath 'de.undercouch:gradle-download-task:2.0.0'
-    classpath 'org.apache.hadoop:hadoop-common:2.6.0'
+    classpath 'de.undercouch:gradle-download-task:3.3.0'
+    classpath 'org.apache.hadoop:hadoop-common:2.8.2'
   }
 }
 
@@ -17,9 +18,9 @@ apply plugin: 'maven'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
-ext.cascadingVersion = '3.1.0'
-ext.hadoop2Version = '2.6.0'
-ext.hiveVersion = '1.0.0'
+ext.cascadingVersion = '3.2.1'
+ext.hadoop2Version = '2.8.2'
+ext.hiveVersion = '2.3.2'
 
 repositories {
     mavenLocal()
@@ -54,7 +55,7 @@ dependencies {
     compile( group: 'cascading', name: 'cascading-hadoop2-mr1', version: cascadingVersion )
     compile( group: 'cascading', name: 'cascading-hadoop2-tez', version: cascadingVersion )
 
-    compile( group: 'com.hotels', name: 'corc-cascading', version: '1.0.0' )
+    compile( group: 'com.hotels', name: 'corc-cascading', version: '2.0.3' )
 
     // install hadoop
     providedCompile( group: 'org.apache.hadoop', name: 'hadoop-common', version: hadoop2Version )
@@ -70,12 +71,12 @@ dependencies {
     testCompile( group: 'org.apache.hadoop', name: 'hadoop-mapreduce-client-core', version: hadoop2Version )
 
     // install cucumber
-    testCompile( group: 'info.cukes', name: 'cucumber-java', version: '1.2.4' )
-    testCompile( group: 'info.cukes', name: 'cucumber-junit', version: '1.2.4' )
-    testCompile( group: 'info.cukes', name: 'cucumber-picocontainer', version: '1.2.4' )
+    testCompile( group: 'info.cukes', name: 'cucumber-java', version: '1.2.5' )
+    testCompile( group: 'info.cukes', name: 'cucumber-junit', version: '1.2.5' )
+    testCompile( group: 'info.cukes', name: 'cucumber-picocontainer', version: '1.2.5' )
 
     // install chunk templates for test data generation
-    testCompile( group: 'com.x5dev', name: 'chunk-templates', version: '3.1.0' )
+    testCompile( group: 'com.x5dev', name: 'chunk-templates', version: '3.3.1' )
 }
 
 
@@ -93,11 +94,11 @@ task cucumber() {
 
 jar {
     description = "Assembles a Hadoop ready jar file"
-    doFirst {
-        into( 'lib' ) {
-            from configurations.compile
-        }
+//    doFirst {
+    into( 'lib' ) {
+        from configurations.compile
     }
+//    }
 
     manifest {
 

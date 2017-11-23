@@ -23,13 +23,13 @@ import cascading.tuple.Fields;
 import java.util.*;
 
 // main processor class
-public class CallStream {
+public class PianoStream {
 
     private static Tap createOutputTap(String path) {
         TextDelimited scheme = new TextDelimited( true, "\t");
 
         Hfs hfsTap = new Hfs(scheme, path);
-        DelimitedPartition partition = new DelimitedPartition(new Fields("country"), "/");
+        DelimitedPartition partition = new DelimitedPartition(new Fields("type"), "/");
         return new PartitionTap(hfsTap, partition, SinkMode.REPLACE);
     }
 
@@ -47,23 +47,23 @@ public class CallStream {
         Tap inTap = new GlobHfs(new TextLine(lines), inputPath);
 
         // Declare the field names used to parse out of the log file
-        Fields callstreamFields = new Fields("id", "country", "time", "duration");
+        Fields pianoStreamFields = new Fields("id", "type", "time", "duration");
 
         // Define the regular expression used to parse the log file
-        String logRegex = "^(\\d+),([a-zA-Z]{2}?),(\\d+),(\\d+)$";
+        String logRegex = "^(\\d+),([a-zA-Z]+?),(\\d+),(\\d+)$";
 
-        // Declare the groups from the above regex. Each group will be given a field name from 'callstreamFields'
+        // Declare the groups from the above regex. Each group will be given a field name from 'pianoStreamFields'
         int[] allGroups = {1, 2, 3, 4};
 
         // Create the parser
-        RegexParser parser = new RegexParser(callstreamFields, logRegex, allGroups);
-        Pipe streamPipe = new Each("CallStream", lines, parser, callstreamFields);
+        RegexParser parser = new RegexParser(pianoStreamFields, logRegex, allGroups);
+        Pipe streamPipe = new Each("PianoStream", lines, parser, pianoStreamFields);
 
         // Add new pipe
         pipes.add(streamPipe);
 
         // give the partition to output
-        sinks.put("CallStream", createOutputTap(outputPath));
+        sinks.put("PianoStream", createOutputTap(outputPath));
 
         // configure cascading
         JobConf jobConf = new JobConf();
@@ -71,8 +71,8 @@ public class CallStream {
         // pass class to the flow connector
         Properties properties;
         properties = AppProps.appProps()
-                .setName(CallStream.class.toString())
-                .setJarClass(CallStream.class)
+                .setName(PianoStream.class.toString())
+                .setJarClass(PianoStream.class)
                 .addTags("app:cascading")
                 .buildProperties(jobConf);
 

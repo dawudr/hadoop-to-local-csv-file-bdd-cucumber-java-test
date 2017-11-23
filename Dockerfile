@@ -9,7 +9,7 @@ RUN apt-get install -y default-jdk wget software-properties-common
 
 ### ADD HADOOP
 RUN mkdir -p /usr/local/hadoop
-RUN cd /tmp/ ; wget http://mirrors.sonic.net/apache/hadoop/common/hadoop-2.6.0/hadoop-2.6.0.tar.gz ; tar xzf hadoop-2.6.0.tar.gz ; mv hadoop-2.6.0/* /usr/local/hadoop
+RUN cd /tmp/ ; wget http://mirror.vorboss.net/apache/hadoop/common/hadoop-2.8.2/hadoop-2.8.2.tar.gz ; tar xzf hadoop-2.8.2.tar.gz ; mv hadoop-2.8.2/* /usr/local/hadoop
 
 ### ADD GRADLE
 RUN add-apt-repository ppa:cwchien/gradle
